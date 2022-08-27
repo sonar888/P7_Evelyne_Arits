@@ -15,9 +15,6 @@ exports.createPagePost = (req, res, next) => {
           id : req.auth.userId,
           name : req.auth.userName,
           admin : req.auth.userAdmin
-          // firstName : {type : mongoose.Schema.Types.String },
-          // lastName : {type : mongoose.Schema.Types.String },
-
       },
     });
     pagePost.save()
@@ -34,10 +31,8 @@ exports.createPagePost = (req, res, next) => {
 
 exports.deletePagePost = async (req, res, next) => {
   try {
-    
     const post = await PagePost.findById(req.params.id)
     const postAuthor = post.author.id
-    const postAdmin = post.author.admin
     const userId = req.auth.userId
     const admin = req.auth.userAdmin
 
@@ -47,25 +42,41 @@ exports.deletePagePost = async (req, res, next) => {
           .catch(error => res.status(400).json({ error }));
     } else {
       pagePosts.findOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'You are not authorised to delete this post !'}))
+          .then(() => res.status(401).json({ message: 'You are not authorised to delete this post !'}))
           .catch(error => res.status(400).json({ error }));
     }
-
-    console.log ("this is my information", post, userId, admin, postAuthor, postAdmin)
-    
-  } catch (err) {
-    console.log (err)
-  }
-
-    
+  } catch (error) {
+    res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
+  }   
 }
 
-exports.updatePagePost = (req, res, next) => {
-  pagePosts.findOneAndUpdate({_id:req.params.id}, {...req.body, _id: req.params.id})
-  .then (() => res.status(200).json({message: 'objet modifié'}))
-  .catch(error => res.status(400).json({ error }));
+exports.updatePagePost = async (req, res, next) => {
+  try {
+    const post = await PagePost.findById(req.params.id)
+    const postAuthor = post.author.id
+    const userId = req.auth.userId
+    const admin = req.auth.userAdmin
+
+    if (postAuthor === userId || admin) {
+        pagePosts.findOneAndUpdate({_id:req.params.id}, {...req.body, _id: req.params.id})
+          .then(() => res.status(200).json({ message: 'Object updated'}))
+          .catch(error => res.status(400).json({ error }));
+    } else {
+      pagePosts.findOne({ _id: req.params.id })
+          .then(() => res.status(401).json({ message: 'You are not authorised to update this post !'}))
+          .catch(error => res.status(400).json({ error }));
+    }
+  } catch (error) {
+    res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
+  }   
 }
 
 
 
     
+
+// (req, res, next) => {
+//   pagePosts.findOneAndUpdate({_id:req.params.id}, {...req.body, _id: req.params.id})
+//   .then (() => res.status(200).json({message: 'objet modifié'}))
+//   .catch(error => res.status(400).json({ error }));
+// }
