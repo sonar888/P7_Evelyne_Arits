@@ -1,9 +1,16 @@
 const mongoose = require('mongoose');
 
 const pagePostSchema = mongoose.Schema({
-    // postId: { type: String, required: false },
-    author: { type: String }, //required: false
-    text: { type: String } //required: false
+    
+     //required: false
+    text: { type: String, required: true },
+    title: {type: String, required: false},
+    
+    author: { 
+        id : {type : String, required: true },
+        name : {type : String, required : true },
+        admin: {type: Boolean}
+    },//required: false
     // imageUrl: { type: String, required: false },
     // likes: { type: Number, required: false },
     // usersLiked: { type: [String], required: false}

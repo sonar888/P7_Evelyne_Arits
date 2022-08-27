@@ -5,8 +5,13 @@ module.exports = (req, res, next) => {
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
         const userId = decodedToken.userId;
+        const userName = decodedToken.userName;
+        const userAdmin = decodedToken.userAdmin
         req.auth = {
-            userId: userId
+            userName: userName,
+            userId: userId,
+            userAdmin: userAdmin
+            
         };
      next();
     } catch(error) {

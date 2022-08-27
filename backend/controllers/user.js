@@ -16,8 +16,14 @@ exports.login = (req, res, next) => {
         res.status(200).json({
           userId: user._id,
           token: jwt.sign(
-            {userId: user._id,}, 'RANDOM_TOKEN_SECRET', {expiresIn: '24h'}
+            {
+              userId: user._id, 
+              userName : user.firstName + " " + user.lastName,
+              userAdmin: user.admin
+              
+            }, 'RANDOM_TOKEN_SECRET', {expiresIn: '24h'}
           )
+          
         })
       })
     })
@@ -28,8 +34,11 @@ exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
         const user = new User({
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
           email: req.body.email,
-          password: hash
+          password: hash,
+        
         });
         user.save()
           .then(() => res.status(201).json({user}))
@@ -37,3 +46,6 @@ exports.signup = (req, res, next) => {
       })
       .catch(error => res.status(500).json({ message: 'Utilisateur erreur !' }));
   };
+
+
+ 
