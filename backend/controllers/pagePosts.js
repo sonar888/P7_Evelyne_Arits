@@ -1,6 +1,7 @@
 const PagePost = require('../models/pagePosts');
 const fs = require('fs');
 const pagePosts = require('../models/pagePosts');
+const { equal } = require('assert');
 
 exports.createPagePost = (req, res, next) => {
     console.log(req.body)
@@ -26,4 +27,13 @@ exports.deletePagePost = (req, res, next) => {
         .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
         .catch(error => res.status(400).json({ error }));
 }
+
+exports.updatePagePost = (req, res, next) => {
+  pagePosts.findOneAndUpdate({_id:req.params.id}, {...req.body, _id: req.params.id})
+  .then (() => res.status(200).json({message: 'objet modifié'}))
+  .catch(error => res.status(400).json({ error }));
+}
+
+
+
     
