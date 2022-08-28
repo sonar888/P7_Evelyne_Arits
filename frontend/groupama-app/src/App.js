@@ -14,7 +14,7 @@ import "./App.css"
 
 
 import { Link } from "react-router-dom";
-import {Routes, Route} from "react-router-dom"
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 
 import { AuthContext } from "./context/AuthContext"
 
@@ -27,9 +27,32 @@ export default function App() {
   
   return (
     <>
-    <Header/>
-    {authentication.isAuthenticated? <Posts/> : <Login/>}
+   
+    <Router>
+      
+      <Header />
+      <Routes>
+        <Route exact path = "/" element={<Posts/>}> </Route>  
+        <Route  path = "/login" element={<Login/>}> </Route>
+      </Routes>
+      
+    </Router> 
+      
+      
+      
+      
+      
+      
+  
+        
+        
+  
     {/* <Posts/> */}
+
+
+    
+    
+    
     </>
   )  ;
 }

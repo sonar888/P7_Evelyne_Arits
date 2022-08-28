@@ -1,11 +1,19 @@
-import React from "react"
+import React, { useContext } from "react"
 import logo from "../logo/icon-left-font-monochrome-white.png"
+import {Link}  from 'react-router-dom';
+
 import "bootstrap/dist/css/bootstrap.css"
 
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 
+
+import { AuthContext } from "../context/AuthContext";
+
 export default function Header() {
+
+  const {authentication} = React.useContext(AuthContext)
+
   return (
    <Navbar bg="red" variant="dark">
     <Container>
@@ -19,8 +27,9 @@ export default function Header() {
         />
       </Navbar.Brand>
       <div>
-        <a href ="">Login</a> 
-        <a href ="">Sign-up</a>
+        {authentication.isAuthenticated? <button>Logout</button> : <Link to ="/login">Login</Link>}
+        {/*  
+        <a href ="">Sign-up</a> */}
       </div>
     </Container>
   </Navbar>

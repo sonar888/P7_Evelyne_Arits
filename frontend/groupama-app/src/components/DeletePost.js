@@ -2,12 +2,18 @@ import React from "react"
 
 import Button from 'react-bootstrap/Button';
 
+import { AuthContext } from "../context/AuthContext";
+
 export default function DeletePostBtn (props) {
 
-    const requestOptions = {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-    } 
+  const {authentication} = React.useContext(AuthContext)
+
+  const requestOptions = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authentication.token}`}
+
+    }
 
     
 

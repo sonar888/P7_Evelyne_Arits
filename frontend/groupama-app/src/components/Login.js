@@ -8,6 +8,9 @@ import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 
 import { AuthContext } from "../context/AuthContext";
+import setCookie from "../session/setCookie";
+import removeCookie from "../session/removeCookie";
+import getCookie from "../session/getCookie";
 
 
 
@@ -48,23 +51,65 @@ export default function LoginForm() {
     })
 
 
+    // export function loginUser({ email, password }) {
+    //     return function(dispatch) {
+    //         axios.post(`${API_URL}/users/authenticate`, { email, password }, { withCredentials: true })
+    //             .then((response) => {
+    //                 if (response.data.result_status == "success") {
+    //                     localStorage.setItem("token", JSON.stringify(response.data.user))
+    //                         dispatch({ type: AUTHENTICATE_USER }); 
+    //                         browserHistory.push("/home");
+    //                     })
+    //                 } 
+    //             })
+    //             .catch(() => {
+    //                 dispatch(authError('Incorrect Login Info'));
+    //             });
+    //     }
+    // }
+
+
    
 
     function handleSubmit(event) {
         event.preventDefault();
         fetch("http://localhost:5000/api/auth/login", requestOptions)
-        .then(res => {
-            if (res.ok) {
+        // .then(res => {
+        //     if (res.ok) {
 
-              return res.json();
+        //       return res.json();
+        //     }
+        //     throw res;
+        //   })
+          
+          .then (response => {
+            console.log (response)
+            if (response.status === 200) {
+                // localStorage.setItem("token", JSON.stringify(response.data.user))
+                return response.json()
+                // console.log(localStorage)
+                    // dispatch({ type: AUTHENTICATE_USER }); 
+                    // browserHistory.push("/home");
+
+                    
+            } else {
+                console.log(response.status)
             }
-            throw res;
+
+            
           })
-          .then (res => {
+          .then (response => {
+            console.log(response)
+            removeCookie('Groupomania')
+
+            setCookie('Groupomania', response.userId)
+            console.log(getCookie('Groupomania'))
+            
             setAuthentication({
-                ...res,
+                ...response,
                 isAuthenticated: true
             })
+            
           })
           .catch(error => {
             setError({

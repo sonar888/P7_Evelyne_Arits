@@ -5,8 +5,6 @@ const { equal } = require('assert');
 
 exports.createPagePost = (req, res, next) => {
     console.log(req.body)
-    // delete req.body._id;
-    //console.log()
     const pagePost = new PagePost({
       text: req.body.text,
       title: req.body.title,
@@ -18,7 +16,7 @@ exports.createPagePost = (req, res, next) => {
       },
     });
     pagePost.save()
-      .then(() => res.status(201).json(pagePost)) // try to console.log(res) if error comes back
+      .then(() => res.status(201).json(pagePost)) 
       .catch(error => res.status(400).json({ error }));
   };
 

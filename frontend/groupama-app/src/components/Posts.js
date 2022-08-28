@@ -59,9 +59,9 @@ export default function Posts() {
                 <Card  >
                     <Card.Header>Featured</Card.Header>
                     <Card.Body>
-                        <Card.Title>{post._id}</Card.Title>
+                        <Card.Title>{post.title}</Card.Title>
                         <Card.Text>
-                        {post.text} by {post.author}
+                        {post.text} by {post.author.name}
                         </Card.Text>
                         <ModifyPostBtn />
                         <DeletePostBtn id = {post._id}/>
