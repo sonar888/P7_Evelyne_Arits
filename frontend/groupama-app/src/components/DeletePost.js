@@ -7,6 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 export default function DeletePostBtn (props) {
 
   const {authentication} = React.useContext(AuthContext)
+  const {refresh, setRefresh} = React.useContext(AuthContext)
 
   const requestOptions = {
     method: 'DELETE',
@@ -29,6 +30,7 @@ export default function DeletePostBtn (props) {
           })
           .then (res => {
             console.log(res)
+            setRefresh (prevData => !prevData)
           })
           .catch(error => {
             console.log(error)

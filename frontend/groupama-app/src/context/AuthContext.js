@@ -9,8 +9,9 @@ const AuthContextProvider = (props) => {
         isAuthenticated: false
     })
 
+    const [refresh, setRefresh] = React.useState(false)
     return (
-        <AuthContext.Provider value={{authentication, setAuthentication}}>
+        <AuthContext.Provider value={{authentication, setAuthentication, refresh, setRefresh}}>
             {props.children}
         </AuthContext.Provider>
     )

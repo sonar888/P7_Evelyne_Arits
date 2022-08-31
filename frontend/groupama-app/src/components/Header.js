@@ -27,7 +27,7 @@ export default function Header() {
         />
       </Navbar.Brand>
       <div>
-        {authentication.isAuthenticated? <button>Logout</button> : <Link to ="/login">Login</Link>}
+        {authentication.isAuthenticated? <button>Logout</button> : <> <Link to ="/login">Login</Link> <Link to ="/signin">Signin</Link> </>}
         {/*  
         <a href ="">Sign-up</a> */}
       </div>

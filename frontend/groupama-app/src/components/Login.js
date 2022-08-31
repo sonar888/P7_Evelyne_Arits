@@ -11,6 +11,7 @@ import { AuthContext } from "../context/AuthContext";
 import setCookie from "../session/setCookie";
 import removeCookie from "../session/removeCookie";
 import getCookie from "../session/getCookie";
+import {Link, useNavigate}  from 'react-router-dom'
 
 
 
@@ -19,6 +20,8 @@ import getCookie from "../session/getCookie";
 export default function LoginForm() {
 
    const {authentication, setAuthentication} = React.useContext(AuthContext) 
+   const {refresh, setRefresh} = React.useContext(AuthContext)
+   const navigate = useNavigate()
 
     
 
@@ -109,6 +112,9 @@ export default function LoginForm() {
                 ...response,
                 isAuthenticated: true
             })
+            setRefresh(prevRefresh => !prevRefresh)
+            navigate('/Home')
+
             
           })
           .catch(error => {

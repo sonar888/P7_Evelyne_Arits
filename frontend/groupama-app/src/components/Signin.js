@@ -12,6 +12,8 @@ import Stack from 'react-bootstrap/Stack';
 export default function Signin() {
 
     const [signinData, setSigninData] = React.useState({
+        firstName: "",
+        lastName:"",
         email: "",
         password :""
     })
@@ -33,7 +35,7 @@ export default function Signin() {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email : signinData.email , password : signinData.password })
+        body: JSON.stringify({ firstName:signinData.firstName, lastName: signinData.lastName, email : signinData.email , password : signinData.password })
     };
 
 
@@ -57,6 +59,27 @@ export default function Signin() {
                 >
                     <form >
                         <Form.Group className="mb-3" >
+                            <Form.Label>First Name</Form.Label>
+                            <Form.Control
+                                type="firstName"
+                                placeholder="First Name"
+                                name="firstName"
+                                value={signinData.firstName}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" >
+                            <Form.Label>Last Name</Form.Label>
+                            <Form.Control
+                                type="lastName"
+                                placeholder="Last Name"
+                                name="lastName"
+                                value={signinData.lastName}
+                                onChange={handleChange}
+                            />
+                            
+                        </Form.Group>
+                        <Form.Group className="mb-3" >
                             <Form.Label>Email address</Form.Label>
                             <Form.Control
                                 type="email"
@@ -65,9 +88,7 @@ export default function Signin() {
                                 value={signinData.email}
                                 onChange={handleChange}
                             />
-                            <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                            </Form.Text>
+                            
                         </Form.Group>
                         <Form.Group className="mb-3" >
                             <Form.Label>Email address</Form.Label>
@@ -78,10 +99,13 @@ export default function Signin() {
                             value={signinData.password}
                             onChange={handleChange}
                             />
-                            <Form.Text className="text-muted">
+                            
+                        </Form.Group> 
+
+                        <Form.Text className="text-muted">
                             We'll never share your email with anyone else.
-                            </Form.Text>
-                        </Form.Group>                    
+                        </Form.Text>
+                                           
                         <Button variant="secondary" onClick={handleSubmit}>Signin</Button>
                     </form>
                 

@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom";
 
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -14,6 +15,7 @@ import { AuthContext } from "../context/AuthContext";
 export default function Posts() {
 
 
+    const {refresh} = React.useContext(AuthContext)
     const {authentication} = React.useContext(AuthContext)
     const [posts, setPosts] = React.useState([])
     const [tokenId, setTokenID ] = React.useState()
@@ -42,7 +44,7 @@ export default function Posts() {
         
 
         console.log("rendered")
-    }, [authentication.token])
+    }, [refresh])
 
 
 
@@ -78,7 +80,7 @@ export default function Posts() {
     return (
         <>
             {postElements} 
-            <NewPostBtn/>
+            <button > <Link to ="/create">+</Link> </button>
 
         </>
     )
