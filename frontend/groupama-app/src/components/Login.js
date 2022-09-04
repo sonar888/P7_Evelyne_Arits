@@ -177,3 +177,11 @@ export default function LoginForm() {
         </Container>
     )
 }
+
+// push url to login if no quthenticqted
+
+// state of history.push?
+// this.props.history.push(`?${url}`);
+//  https://dev.to/gaels/an-alternative-to-handle-global-state-in-react-the-url--3753
+
+// paragraphes: https://askcodez.com/comment-faire-pour-preserver-les-sauts-de-ligne-lors-de-lobtention-de-texte-a-partir-dun-textarea.html

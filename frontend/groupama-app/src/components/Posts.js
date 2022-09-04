@@ -1,62 +1,63 @@
+// Import React elements
+
 import React from "react"
 import { Link } from "react-router-dom";
+
+
+// Import React-Boostrap elements
 
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from "react-bootstrap/esm/Col";
 import "bootstrap/dist/css/bootstrap.css";
 
-import NewPostBtn from "./NewPost";
-import ModifyPostBtn from "./ModifyPost";
-import DeletePostBtn from "./DeletePost";
 
+//Import React components
+
+import DeletePostBtn from "./DeletePost";
 import { AuthContext } from "../context/AuthContext";
+
+
+// This component is the main component of the page and displays the posts from the database through API call
 
 export default function Posts() {
 
 
-    const {refresh} = React.useContext(AuthContext)
-    const {authentication} = React.useContext(AuthContext)
-    const [posts, setPosts] = React.useState([])
+    const {refresh} = React.useContext(AuthContext) // the refresh state can be true or false => this does not impact the display, here refresh is used to trigger the UseEffect function when it's value changes
+    const {authentication} = React.useContext(AuthContext) // this boolean handles the authentication 
+    const [posts, setPosts] = React.useState([]) // an [] of posts
     const [tokenId, setTokenID ] = React.useState()
-    // const [postElements, setPostElements] = React.useState()
+    
 
     
 
-
+// The request options for the fecth call
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json',
         'Authorization': `Bearer ${authentication.token}`}
-
-        }
+    }
 
    
-  console.log(authentication.token)
 
+// The API call that retrieves the posts data from the database
     React.useEffect( function() {  
         
         fetch("http://localhost:5000/api/pagePosts", requestOptions)
-        .then (res => res.json())
+        .then (res => res.json()) //gestion des paragraphes ?
         .then (res => setPosts(res))
-        
-                
-        
-
-        console.log("rendered")
-    }, [refresh])
+    }, [refresh]) // triggered when the refresh value changes
 
 
 
     
-
+// A function that takes each post and renders it in a JSX component
     const postElements = posts.map(post => {
         return (
 
             <Col
             xs={{ span: 10, offset: 1}} 
             sm={{ span: 8, offset: 2 }}
-            // md={{ span: 7, offset: 3 }}
             key={post._id}>
                 <Card  >
                     <Card.Header>Featured</Card.Header>
@@ -65,7 +66,7 @@ export default function Posts() {
                         <Card.Text>
                         {post.text} by {post.author.name}
                         </Card.Text>
-                        <ModifyPostBtn />
+                        <Button  variant="danger"> <Link to = "/modify" state = {{title : post.title, text : post.text, id : post._id}}> Modify </Link> </Button>
                         <DeletePostBtn id = {post._id}/>
                     </Card.Body>
                 </Card>
@@ -78,24 +79,16 @@ export default function Posts() {
 
 
     return (
-        <>
+        <>  
             {postElements} 
-            <button > <Link to ="/create">+</Link> </button>
+            <button > <Link to ="/create">+</Link> </button> 
 
         </>
     )
 }
 
 
- // React.useEffect ( () => {
-    //     setTokenID (authentication.token)
-    // }, [0]) 
-    // console.log(authentication, tokenId)
-
-  // var myHeaders = new Headers();
-    //   myHeaders.append("Content-Type", "application/json")
-    //   myHeaders.append("Authorization", "Bearer " + token)
-
+//Personnal notes, please ignore for now
 
     // add a loading to wait for API response (if/else) and return when loaded
     // use quantity see screenshot as prop to re-render the page

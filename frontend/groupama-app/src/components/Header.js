@@ -1,19 +1,39 @@
-import React, { useContext } from "react"
-import logo from "../logo/icon-left-font-monochrome-white.png"
+// Import React elements
+
+import React from "react"
 import {Link}  from 'react-router-dom';
 
-import "bootstrap/dist/css/bootstrap.css"
 
+// Import React-Boostrap and css elements
+
+import logo from "../logo/icon-left-font-monochrome-white.png"
+import "bootstrap/dist/css/bootstrap.css"
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 
 
+//Import React components
+
 import { AuthContext } from "../context/AuthContext";
+import removeCookie from "../session/removeCookie";
+
+
+// This function displays the head but also changes based on the authentication of the user
 
 export default function Header() {
 
-  const {authentication} = React.useContext(AuthContext)
+  const {authentication, setAuthentication} = React.useContext(AuthContext)
 
+
+  // The function that will log out the user when he clicks on the button
+  function handleLogout() {
+    removeCookie('Groupomania');
+    setAuthentication({isAuthenticated : false})
+
+  }
+
+
+  // The header
   return (
    <Navbar bg="red" variant="dark">
     <Container>
@@ -27,19 +47,17 @@ export default function Header() {
         />
       </Navbar.Brand>
       <div>
-        {authentication.isAuthenticated? <button>Logout</button> : <> <Link to ="/login">Login</Link> <Link to ="/signin">Signin</Link> </>}
-        {/*  
-        <a href ="">Sign-up</a> */}
+
+        {/* This dipslay the logout button when the user is logged in, or the option to login/signup */}
+        {authentication.isAuthenticated? <button onClick={handleLogout}>Logout</button> : <> <Link to ="/login">Login</Link> <Link to ="/signup">Signup</Link> </>} 
+      
       </div>
     </Container>
   </Navbar>
   );
 }
 
-// importer le composant login
-// ajouter le composant login dans le composant link 
-// utilisation de components link 
-// router switch index.js + private route
+
 
 // see https://github.com/marialena31/online-store-90mn/blob/main/src/components/App.js
 //see https://github.com/marialena31/rest-countries-api/tree/master/src

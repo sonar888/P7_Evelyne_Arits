@@ -8,7 +8,6 @@ import {
 
 import './index.css';
 import App from './App';
-import Body from "./components/Body"
 import reportWebVitals from './reportWebVitals';
 
 
