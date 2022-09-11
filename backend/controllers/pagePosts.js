@@ -4,24 +4,47 @@ const pagePosts = require('../models/pagePosts');
 const { equal } = require('assert');
 
 exports.createPagePost = (req, res, next) => {
-    console.log(req.body)
+  console.log(req)
+
+  if (!req.file) {
     const pagePost = new PagePost({
       text: req.body.text,
       title: req.body.title,
+      created_at: Math.floor(Date.now() / 1000),
     
       author: { 
           id : req.auth.userId,
           name : req.auth.userName,
           admin : req.auth.userAdmin
       },
-    });
+    })
     pagePost.save()
       .then(() => res.status(201).json(pagePost)) 
       .catch(error => res.status(400).json({ error }));
+    
+  } else if (req.file) {
+    const pagePost = new PagePost({
+      text: req.body.text,
+      title: req.body.title,
+      created_at: Math.floor(Date.now() / 1000),
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    
+      author: { 
+          id : req.auth.userId,
+          name : req.auth.userName,
+          admin : req.auth.userAdmin
+      },
+    })
+    pagePost.save()
+    .then(() => res.status(201).json(pagePost)) 
+    .catch(error => res.status(400).json({ error }));
+  } 
   };
 
+
+
   exports.showAllPagePosts = (req, res, next) => {
-    pagePosts.find()
+    pagePosts.find().sort({"created_at": "-1" })
         .then(pagePost => res.status(200).json(pagePost))
         .catch(error => res.status(400).json({error: error})) 
 
@@ -67,6 +90,33 @@ exports.updatePagePost = async (req, res, next) => {
   } catch (error) {
     res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
   }   
+}
+
+exports.likePagePost = async (req, res, next) => {
+  try {
+    const post = await PagePost.findById(req.params.id)
+    const userId = req.auth.userId
+    const usersLiked = post.usersLiked
+
+    if (usersLiked.includes(userId)) {
+
+      const index = usersLiked.indexOf(userId)
+      usersLiked.splice(index, 1)
+      post.likes = usersLiked.length;
+      post.save()
+      
+      return res.status(201).json(post)
+    }
+
+    usersLiked.push(userId)
+    post.likes = usersLiked.length
+    post.save();
+    return res.status(201).json(post)
+
+  } catch (error) {
+    res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
+  }   
+
 }
 
 

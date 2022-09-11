@@ -40,11 +40,11 @@ export default function App() {
     <Router>
       <Header />
       <Routes>
-        <Route  path = "/home" element={ authentication.isAuthenticated? <>  <Posts/></> : <Login/> }> </Route>  
+        <Route  path = "/Home" element={ authentication.isAuthenticated? <>  <Posts/></> : <Login/> }> </Route>  
         <Route  path = "/login" element={<Login/>}> </Route>
         <Route  path = "/signup" element={<Signup/>}> </Route>
-        <Route  path = "/create" element={<NewPost/>}> </Route>
-        <Route path = "/modify" element = {<ModifyPost/>}></Route>
+        <Route  path = "/create" element={ authentication.isAuthenticated? <>  <NewPost/></> : <Login/> }> </Route>
+        <Route path = "/modify" element = { authentication.isAuthenticated? <>  <ModifyPost/></> : <Login/> }></Route>
       </Routes>
     </Router> 
       

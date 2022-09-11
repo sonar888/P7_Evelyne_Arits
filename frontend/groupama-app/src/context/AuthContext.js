@@ -6,6 +6,7 @@ const AuthContextProvider = (props) => {
     const [authentication, setAuthentication] = React.useState({
         userId: null,
         token: null,
+        isAdmin: true,
         isAuthenticated: false
     })
 

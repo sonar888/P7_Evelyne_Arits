@@ -1,38 +1,41 @@
 import React from "react";
+import {Link, useNavigate, useLocation}  from 'react-router-dom'
+
+
 import Card from 'react-bootstrap/Card';
-
-
 import "bootstrap/dist/css/bootstrap.css"
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
-
 import InputGroup from 'react-bootstrap/InputGroup';
 
 
-import {Link, useNavigate}  from 'react-router-dom'
 import { AuthContext } from "../context/AuthContext";
-import { useLocation } from 'react-router-dom'
 
 
 
 export default function ModifyPost () {
 
+
+// This enables us to prefill the forms with the information from the post so that the user does not need to retype his whole post/title
     const location = useLocation()
     const { title , text, id } = location.state
 
 
     const {authentication} = React.useContext(AuthContext)
     const {refresh, setRefresh} = React.useContext(AuthContext)
+
+// Is used to redirect the user once he has submitted the post    
     const navigate = useNavigate()
 
     const [formData, setFormData] = React.useState({
-        title: "",
-        text: ""
+        title: title,
+        text: text
 
     })
+    
     function handleChange(event) {
         const {type, value, name} = event.target
         setFormData(prevData => {

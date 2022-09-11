@@ -16,6 +16,7 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import DeletePostBtn from "./DeletePost";
 import { AuthContext } from "../context/AuthContext";
+import Like from "./Like";
 
 
 // This component is the main component of the page and displays the posts from the database through API call
@@ -42,17 +43,17 @@ export default function Posts() {
 
 // The API call that retrieves the posts data from the database
     React.useEffect( function() {  
-        
+        console.log(authentication)
         fetch("http://localhost:5000/api/pagePosts", requestOptions)
         .then (res => res.json()) //gestion des paragraphes ?
         .then (res => setPosts(res))
     }, [refresh]) // triggered when the refresh value changes
 
-
-
+    
     
 // A function that takes each post and renders it in a JSX component
     const postElements = posts.map(post => {
+        console.log(new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(post.created_at));
         return (
 
             <Col
@@ -60,14 +61,22 @@ export default function Posts() {
             sm={{ span: 8, offset: 2 }}
             key={post._id}>
                 <Card  >
-                    <Card.Header>Featured</Card.Header>
+                    <Card.Header>{post.title} {post._id}</Card.Header>
                     <Card.Body>
-                        <Card.Title>{post.title}</Card.Title>
+                        <Card.Title>{post.text}</Card.Title>
                         <Card.Text>
-                        {post.text} by {post.author.name}
+                            <img src={post.imageUrl}/>
+                         by {post.author.name} at {post.created_at}
                         </Card.Text>
-                        <Button  variant="danger"> <Link to = "/modify" state = {{title : post.title, text : post.text, id : post._id}}> Modify </Link> </Button>
-                        <DeletePostBtn id = {post._id}/>
+                       
+                       
+                        {authentication.userId === post.author.id || authentication.isAdmin?  <Button  variant="danger"> <Link to = "/modify" state = {{title : post.title, text : post.text, id : post._id}}> Modify </Link> </Button> : ""}
+                        {authentication.userId === post.author.id || authentication.isAdmin? <DeletePostBtn id = {post._id}/> : ""}
+                    
+                        Likes: {post.likes}
+                        <Like id = {post._id}/>
+                        
+                    
                     </Card.Body>
                 </Card>
             </Col>
@@ -81,6 +90,8 @@ export default function Posts() {
     return (
         <>  
             {postElements} 
+
+         
             <button > <Link to ="/create">+</Link> </button> 
 
         </>

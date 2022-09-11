@@ -54,46 +54,29 @@ export default function LoginForm() {
     })
 
 
-    // export function loginUser({ email, password }) {
-    //     return function(dispatch) {
-    //         axios.post(`${API_URL}/users/authenticate`, { email, password }, { withCredentials: true })
-    //             .then((response) => {
-    //                 if (response.data.result_status == "success") {
-    //                     localStorage.setItem("token", JSON.stringify(response.data.user))
-    //                         dispatch({ type: AUTHENTICATE_USER }); 
-    //                         browserHistory.push("/home");
-    //                     })
-    //                 } 
-    //             })
-    //             .catch(() => {
-    //                 dispatch(authError('Incorrect Login Info'));
-    //             });
-    //     }
-    // }
+    // decode the logged in user
+  function parseJwt(token) {
+    if (!token) {
+      return;
+    }
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    return JSON.parse(window.atob(base64));
+  }
 
-
+  // loggedin user
+  
    
 
     function handleSubmit(event) {
         event.preventDefault();
         fetch("http://localhost:5000/api/auth/login", requestOptions)
-        // .then(res => {
-        //     if (res.ok) {
-
-        //       return res.json();
-        //     }
-        //     throw res;
-        //   })
+        
           
           .then (response => {
             console.log (response)
             if (response.status === 200) {
-                // localStorage.setItem("token", JSON.stringify(response.data.user))
                 return response.json()
-                // console.log(localStorage)
-                    // dispatch({ type: AUTHENTICATE_USER }); 
-                    // browserHistory.push("/home");
-
                     
             } else {
                 console.log(response.status)
@@ -105,13 +88,29 @@ export default function LoginForm() {
             console.log(response)
             removeCookie('Groupomania')
 
-            setCookie('Groupomania', response.userId)
+            setCookie('Groupomania', response.token)
             console.log(getCookie('Groupomania'))
+            const role = parseJwt(response.token)
+            console.log(role)
+
+            if (role.userAdmin) {
+                setAuthentication({
+                    ...response,
+                    isAuthenticated: true,
+                    isAdmin: true
+                })
+
+            } else {
+                setAuthentication({
+                    ...response,
+                    isAuthenticated: true,
+                    isAdmin: false
+                    
+                })
+
+            }
+
             
-            setAuthentication({
-                ...response,
-                isAuthenticated: true
-            })
             setRefresh(prevRefresh => !prevRefresh)
             navigate('/Home')
 
@@ -153,7 +152,7 @@ export default function LoginForm() {
                             </Form.Text>
                         </Form.Group>
                         <Form.Group className="mb-3" >
-                            <Form.Label>Email address</Form.Label>
+                            <Form.Label>password</Form.Label>
                             <Form.Control
                             type="password"
                             placeholder="password"

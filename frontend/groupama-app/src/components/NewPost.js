@@ -32,21 +32,26 @@ export default function NewPost() {
 // A state with the form data
     const [formData, setFormData] = React.useState({
         title: "",
-        text: ""
+        text: "",
+        imageUrl: ""
 
     })
 
 
 // This function watches the form input and updates the form data with every keystroke
     function handleChange(event) {
+        // const file = event.target.files[0]
         const {type, value, name} = event.target
         setFormData(prevData => {
             return {
                 ...prevData,
-                [name] : value
+                
+                [name] : value,
+                
             }
         })
         console.log(formData)
+        // console.log(files[0].name)
     }
 
 
@@ -54,7 +59,7 @@ export default function NewPost() {
     const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authentication.token}`},
-                body: JSON.stringify({ title : formData.title , text : formData.text }),
+                body: JSON.stringify({ title : formData.title , text : formData.text, imageUrl: formData.imageUrl }),
         
             };
 
@@ -103,16 +108,25 @@ export default function NewPost() {
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" >
-                        <Form.Label>Text</Form.Label>                           
-                        <InputGroup>                            
-                            <Form.Control as="textarea" 
-                                type="text"
-                                placeholder="text"
-                                name="text"
-                                value={formData.text}
-                                onChange={handleChange} aria-label="With textarea" />
-                        </InputGroup>
-                            
+                            <Form.Label>Text</Form.Label>                           
+                            <InputGroup>                            
+                                <Form.Control as="textarea" 
+                                    type="text"
+                                    placeholder="text"
+                                    name="text"
+                                    value={formData.text}
+                                    onChange={handleChange} aria-label="With textarea" />
+                            </InputGroup>            
+                        </Form.Group>
+                        <Form.Group className="mb-3" >
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control
+                                type="file"
+                                placeholder="file"
+                                name="file"
+                                // value={formData.file}
+                                onChange={handleChange}
+                            />
                         </Form.Group>
                         
                                            
