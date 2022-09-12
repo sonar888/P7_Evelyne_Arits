@@ -11,8 +11,8 @@ router.get('/', auth, pagePostsCtrl.showAllPagePosts); //don't forget to add aut
 
 
 router.post('/', auth, multer, pagePostsCtrl.createPagePost); //, multer auth
-router.delete('/:id', auth, pagePostsCtrl.deletePagePost);
-router.put('/:id', auth, pagePostsCtrl.updatePagePost);
+router.delete('/:id', auth, multer, pagePostsCtrl.deletePagePost);
+router.put('/:id', auth, multer, pagePostsCtrl.updatePagePost);
 
 router.post('/:id/like', auth, pagePostsCtrl.likePagePost)
 

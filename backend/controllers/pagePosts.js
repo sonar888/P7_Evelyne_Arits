@@ -50,47 +50,184 @@ exports.createPagePost = (req, res, next) => {
 
   };
 
-exports.deletePagePost = async (req, res, next) => {
-  try {
-    const post = await PagePost.findById(req.params.id)
-    const postAuthor = post.author.id
-    const userId = req.auth.userId
-    const admin = req.auth.userAdmin
 
-    if (postAuthor === userId || admin) {
-        pagePosts.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-          .catch(error => res.status(400).json({ error }));
+
+
+
+
+// exports.deletePagePost = async (req, res, next) => {
+//   try {
+//     const post = await PagePost.findById(req.params.id)
+//     const postAuthor = post.author.id
+//     const userId = req.auth.userId
+//     const admin = req.auth.userAdmin
+
+//     if (postAuthor === userId || admin) {
+//         pagePosts.deleteOne({ _id: req.params.id })
+//           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+//           .catch(error => res.status(400).json({ error }));
+//     } else {
+//       pagePosts.findOne({ _id: req.params.id })
+//           .then(() => res.status(401).json({ message: 'You are not authorised to delete this post !'}))
+//           .catch(error => res.status(400).json({ error }));
+//     }
+//   } catch (error) {
+//     res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
+//   }   
+// }
+
+
+exports.deletePagePost = (req, res, next) => {
+   PagePost.findOne({ _id: req.params.id})
+       .then(post => {
+
+        const postAuthor = post.author.id
+        const userId = req.auth.userId
+        const admin = req.auth.userAdmin
+
+           if (postAuthor === userId || admin) {
+            const filename = post.imageUrl.split('/images/')[1];
+            fs.unlink(`images/${filename}`, () => {
+                PagePost.deleteOne({_id: req.params.id})
+                    .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
+                    .catch(error => res.status(401).json({ error }));
+            })
+           } else {
+              res.status(401).json({ message: 'You are not authorised to delete this post !'})
+           }
+       })
+       .catch( error => {
+           res.status(500).json({ error });
+       });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// exports.updatePagePost = async (req, res, next) => {
+//   try {
+//     const post = await PagePost.findById(req.params.id)
+//     const postAuthor = post.author.id
+//     const userId = req.auth.userId
+//     const admin = req.auth.userAdmin
+
+//     if (postAuthor === userId || admin) {
+//         pagePosts.findOneAndUpdate({_id:req.params.id}, {...req.body, _id: req.params.id})
+//           .then(() => res.status(200).json({ message: 'Object updated'}))
+//           .catch(error => res.status(400).json({ error }));
+//     } else {
+//       pagePosts.findOne({ _id: req.params.id })
+//           .then(() => res.status(401).json({ message: 'You are not authorised to update this post !'}))
+//           .catch(error => res.status(400).json({ error }));
+//     }
+//   } catch (error) {
+//     res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
+//   }   
+// }
+
+exports.updatePagePost = (req, res, next) => {
+  PagePost.findOne({ _id: req.params.id})
+    .then (post => {
+      const postAuthor = post.author.id
+      const userId = req.auth.userId
+      const admin = req.auth.userAdmin
+
+      if (postAuthor === userId || admin) {
+        console.log(req)
+
+        const PagePostObject = req.file ? 
+        
+        
+          {...req.body, 
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+          }
+
+          :
+
+          { ...req.body };
+
+          PagePost.updateOne({ _id: req.params.id }, { ...PagePostObject, _id: req.params.id })
+            .then((post) => res.status(200).json(post))
+            .catch(error => res.status(400).json({ error }));
+        
     } else {
-      pagePosts.findOne({ _id: req.params.id })
-          .then(() => res.status(401).json({ message: 'You are not authorised to delete this post !'}))
-          .catch(error => res.status(400).json({ error }));
-    }
-  } catch (error) {
-    res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
-  }   
-}
-
-exports.updatePagePost = async (req, res, next) => {
-  try {
-    const post = await PagePost.findById(req.params.id)
-    const postAuthor = post.author.id
-    const userId = req.auth.userId
-    const admin = req.auth.userAdmin
-
-    if (postAuthor === userId || admin) {
-        pagePosts.findOneAndUpdate({_id:req.params.id}, {...req.body, _id: req.params.id})
-          .then(() => res.status(200).json({ message: 'Object updated'}))
-          .catch(error => res.status(400).json({ error }));
-    } else {
-      pagePosts.findOne({ _id: req.params.id })
+      PagePost.findOne({ _id: req.params.id })
           .then(() => res.status(401).json({ message: 'You are not authorised to update this post !'}))
           .catch(error => res.status(400).json({ error }));
     }
-  } catch (error) {
-    res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
-  }   
+
+
+
+    })
+    .catch (error => {
+      res.status(400).send({ message: 'An error occurred, post does probably not exist', error : error.message})
+    }) 
 }
+
+
+
+
+
+
+
+
+
+// exports.deleteSauce = (req, res, next) => {
+//   Sauce.findOne({ _id: req.params.id })
+//     .then(sauce => {
+//       const filename = sauce.imageUrl.split('/images/')[1];
+//       fs.unlink(`images/${filename}`, () => {
+//         Sauce.deleteOne({ _id: req.params.id })
+//           .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+//           .catch(error => res.status(400).json({ error }));
+//       });
+//     })
+//     .catch(error => res.status(500).json({ error }));
+// };
+
+// exports.modifySauce = (req, res, next) => {
+//   const sauceObject = req.file ?
+//     {
+//       ...JSON.parse(req.body.sauce),
+//       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+//     } : { ...req.body };
+//   Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+//     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+//     .catch(error => res.status(400).json({ error }));
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 exports.likePagePost = async (req, res, next) => {
   try {
