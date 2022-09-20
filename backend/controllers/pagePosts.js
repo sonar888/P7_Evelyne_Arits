@@ -1,7 +1,6 @@
 const PagePost = require('../models/pagePosts');
 const fs = require('fs');
 const pagePosts = require('../models/pagePosts');
-const { equal } = require('assert');
 
 exports.createPagePost = (req, res, next) => {
   console.log(req)
@@ -86,12 +85,27 @@ exports.deletePagePost = (req, res, next) => {
         const admin = req.auth.userAdmin
 
            if (postAuthor === userId || admin) {
-            const filename = post.imageUrl.split('/images/')[1];
-            fs.unlink(`images/${filename}`, () => {
+
+            if (post.imageUrl) {
+              const filename = post.imageUrl.split('/images/')[1];
+              fs.unlink(`images/${filename}`, () => {
                 PagePost.deleteOne({_id: req.params.id})
                     .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
                     .catch(error => res.status(401).json({ error }));
             })
+
+            } else {
+              PagePost.deleteOne({_id: req.params.id})
+                    .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
+                    .catch(error => res.status(401).json({ error }));
+            }
+              
+
+            PagePost.deleteOne({_id: req.params.id})
+                    .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
+                    .catch(error => res.status(401).json({ error }));
+
+
            } else {
               res.status(401).json({ message: 'You are not authorised to delete this post !'})
            }
@@ -152,7 +166,7 @@ exports.updatePagePost = (req, res, next) => {
       const admin = req.auth.userAdmin
 
       if (postAuthor === userId || admin) {
-        console.log(req)
+        // console.log(req)
 
         const PagePostObject = req.file ? 
         

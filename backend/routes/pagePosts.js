@@ -4,6 +4,9 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 
+// const multer = require("multer");
+// const upload = multer({ dest: "images/" });
+
 const pagePostsCtrl = require('../controllers/pagePosts');
 
 router.get('/', auth, pagePostsCtrl.showAllPagePosts); //don't forget to add auth auth

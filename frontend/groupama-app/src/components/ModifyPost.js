@@ -30,35 +30,53 @@ export default function ModifyPost () {
 // Is used to redirect the user once he has submitted the post    
     const navigate = useNavigate()
 
-    const [formData, setFormData] = React.useState({
+    const [form, setForm] = React.useState({
         title: title,
         text: text
 
     })
+    const [file, setFile] = React.useState()    
     
     function handleChange(event) {
         const {type, value, name} = event.target
-        setFormData(prevData => {
+        setForm(prevData => {
             return {
                 ...prevData,
                 [name] : value
             }
         })
-        console.log(formData)
+        console.log(form)
+    }
+    function handleFile(event) {
+        setFile(event.target.files[0])
     }
 
 
-    const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authentication.token}`},
-                body: JSON.stringify({ title : formData.title , text : formData.text }),
-        
-            };
+   
 
     function handleModifyPost(event) {
         event.preventDefault();
 
-        fetch("http://localhost:5000/api/pagePosts/" + id, requestOptions)
+
+        const myHeaders = new Headers();
+        // ("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${authentication.token}`);
+
+        const formdata = new FormData();
+        formdata.append("image", file);
+        formdata.append("text", form.text);
+        formdata.append("title", form.title);
+
+        console.log(formdata.file)
+
+        const requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+          };
+
+        fetch("http://localhost:5000/api/pagePosts/"+ id, requestOptions)
         .then(res => {
             if (res.ok) {
 
@@ -68,7 +86,7 @@ export default function ModifyPost () {
           })
           .then (res => {
             setRefresh( prevData => !prevData)
-            navigate('/Home')
+            navigate('/')
             
           })
           .catch(error => {
@@ -97,20 +115,23 @@ export default function ModifyPost () {
                         />
                     </Form.Group>
                     <Form.Group className="mb-3" >
-                    <Form.Label>Text</Form.Label>                           
-                    <InputGroup>                            
-                        <Form.Control as="textarea" 
-                            type="text"
-                            name="text"
-                            onChange={handleChange} aria-label="With textarea" 
-                            defaultValue={text}/>
-
-
-
-                            
-                    </InputGroup>
-                        
+                        <Form.Label>Text</Form.Label>                           
+                        <InputGroup>                            
+                            <Form.Control as="textarea" 
+                                type="text"
+                                name="text"
+                                onChange={handleChange} aria-label="With textarea" 
+                                defaultValue={text}/>      
+                        </InputGroup>     
                     </Form.Group>
+                    <Form.Group className="mb-3" >
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control
+                                type="file"
+                                // value={file}
+                                onChange={handleFile}
+                            />
+                        </Form.Group>
                     
                                        
                     <Button variant="secondary" onClick={handleModifyPost}>Submit</Button>

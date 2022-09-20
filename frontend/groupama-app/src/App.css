@@ -2,25 +2,37 @@
   background-color: #FD2D01;
 }
 
-.popup-box {
-  position: fixed;
-  background: #00000050;
-  width: 100%;
-  height: 100vh;
-  top: 0;
-  left: 0;
+.card {
+  margin-top: 20px;
 }
- 
-.box {
-  position: relative;
-  width: 70%;
-  margin: 0 auto;
-  height: auto;
-  max-height: 70vh;
-  margin-top: calc(100vh - 85vh - 20px);
-  background: #fff;
-  border-radius: 4px;
-  padding: 20px;
-  border: 1px solid #999;
-  overflow: auto;
+
+
+.parent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+.parent button {
+
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+
+  background-color: #FD2D01;
+  color: white;
+  border: none;
+  padding: 5px;
+  font-size: 31px;
+  height: 100px;
+  width: 100px;
+  box-shadow: 0 2px 4px darkslategray;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.round {
+  border-radius: 70%;
+}
+
+

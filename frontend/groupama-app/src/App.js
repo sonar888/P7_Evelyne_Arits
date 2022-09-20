@@ -5,6 +5,7 @@ import Footer from "./components/Footer"
 import Posts from "./components/Posts"
 import Signup from "./components/Signup"
 import getCookie from "./session/getCookie"
+import Test from "./components/Test"
 
 import "bootstrap/dist/css/bootstrap.css"
 import Col from 'react-bootstrap/Col'
@@ -40,7 +41,7 @@ export default function App() {
     <Router>
       <Header />
       <Routes>
-        <Route  path = "/Home" element={ authentication.isAuthenticated? <>  <Posts/></> : <Login/> }> </Route>  
+        <Route  exact path = "/" element={ authentication.isAuthenticated? <>  <Posts/></> : <Login/> }> </Route>  
         <Route  path = "/login" element={<Login/>}> </Route>
         <Route  path = "/signup" element={<Signup/>}> </Route>
         <Route  path = "/create" element={ authentication.isAuthenticated? <>  <NewPost/></> : <Login/> }> </Route>
@@ -54,7 +55,7 @@ export default function App() {
       
       
   
-        
+        {/* <Test/> */}
         
   
     {/* <Posts/> */}

@@ -6,10 +6,17 @@ import { Link } from "react-router-dom";
 
 // Import React-Boostrap elements
 
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from "react-bootstrap/esm/Col";
 import "bootstrap/dist/css/bootstrap.css";
+import Stack from "react-bootstrap/esm/Stack";
+import Spinner from 'react-bootstrap/Spinner';
+
+
+
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 
 //Import React components
@@ -27,7 +34,7 @@ export default function Posts() {
     const {refresh} = React.useContext(AuthContext) // the refresh state can be true or false => this does not impact the display, here refresh is used to trigger the UseEffect function when it's value changes
     const {authentication} = React.useContext(AuthContext) // this boolean handles the authentication 
     const [posts, setPosts] = React.useState([]) // an [] of posts
-    const [tokenId, setTokenID ] = React.useState()
+    const [isLoaded, setIsLoaded] = React.useState(false)
     
 
     
@@ -43,64 +50,63 @@ export default function Posts() {
 
 // The API call that retrieves the posts data from the database
     React.useEffect( function() {  
-        console.log(authentication)
         fetch("http://localhost:5000/api/pagePosts", requestOptions)
-        .then (res => res.json()) //gestion des paragraphes ?
-        .then (res => setPosts(res))
+        .then ((response) => {
+            if (response.ok) {
+                return response.json()
+            }
+            throw new Error('Something went wrong')
+        })
+        .then((response) => {
+            setPosts(response)
+            setIsLoaded(true)
+        })
+        .catch((error) => {console.log(error)})  
     }, [refresh]) // triggered when the refresh value changes
 
     
+
     
 // A function that takes each post and renders it in a JSX component
     const postElements = posts.map(post => {
-        console.log(new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(post.created_at));
         return (
 
             <Col
             xs={{ span: 10, offset: 1}} 
             sm={{ span: 8, offset: 2 }}
             key={post._id}>
-                <Card  >
-                    <Card.Header>{post.title} {post._id}</Card.Header>
-                    <Card.Body>
-                        <Card.Title>{post.text}</Card.Title>
-                        <Card.Text>
-                            <img src={post.imageUrl}/>
-                         by {post.author.name} at {post.created_at}
-                        </Card.Text>
-                       
-                       
-                        {authentication.userId === post.author.id || authentication.isAdmin?  <Button  variant="danger"> <Link to = "/modify" state = {{title : post.title, text : post.text, id : post._id}}> Modify </Link> </Button> : ""}
+                <Card className="card" >
+                    <Card.Header>
+                    <Stack direction="horizontal" gap={3}>
+                        <Card.Title>{post.title}</Card.Title>
+                        {authentication.userId === post.author.id || authentication.isAdmin? <button className="bg-light border ms-auto"> <Link to = "/modify" state = {{title : post.title, text : post.text, id : post._id}}> <FontAwesomeIcon icon={faPenToSquare}/> </Link> </button> : ""}
+                        <div className="vr" />
                         {authentication.userId === post.author.id || authentication.isAdmin? <DeletePostBtn id = {post._id}/> : ""}
-                    
-                        Likes: {post.likes}
-                        <Like id = {post._id}/>
-                        
-                    
+                    </Stack>   
+                    </Card.Header>
+                    <Card.Body>
+                        <Card.Text>
+                            {post.text}
+                        </Card.Text>
+                        <Card.Img variant="top" src={post.imageUrl} />
+                        <footer className="blockquote-footer">
+                            Un message de <cite title="Source Title">{post.author.name}</cite>
+                        </footer>
+                        <Like id = {post._id}/> {post.likes}
                     </Card.Body>
                 </Card>
             </Col>
 
         )
-    }
-        
-    )
+    })
 
 
     return (
         <>  
-            {postElements} 
-
-         
-            <button > <Link to ="/create">+</Link> </button> 
+            {isLoaded? <div>{postElements}</div> : <Spinner animation="border" variant="primary" />}
+            <div className="parent"><button className="round"> <Link to ="/create"><FontAwesomeIcon icon={faPlus} inverse /></Link> </button></div> 
 
         </>
     )
 }
-
-
-//Personnal notes, please ignore for now
-
-    // add a loading to wait for API response (if/else) and return when loaded
-    // use quantity see screenshot as prop to re-render the page
 

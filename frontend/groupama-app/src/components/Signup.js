@@ -1,6 +1,8 @@
 // Import React elements
 
 import React from "react";
+import {Link, useNavigate}  from 'react-router-dom'
+
 
 // Import React-Boostrap and css elements
 
@@ -17,6 +19,8 @@ import Stack from 'react-bootstrap/Stack';
 // Handles the form and then sends the information to the API to create a new user
 export default function Signup() {
 
+    const navigate = useNavigate()
+
 
 // A state with the form data
     const [signupData, setSignupData] = React.useState({
@@ -26,10 +30,15 @@ export default function Signup() {
         password :""
     })
 
+
+    const [error, setError] = React.useState({
+        errorMessage : undefined,
+        hasError  : false
+        })
+
 // This function watches the form input and updates the form data with every keystroke
     function handleChange(event){
         const {name, type, value} = event.target
-
         setSignupData( prevData => {
             return {
                 ...prevData,
@@ -53,8 +62,22 @@ export default function Signup() {
         event.preventDefault()
         console.log("Form submitted", requestOptions.body)
         fetch("http://localhost:5000/api/auth/signup", requestOptions)
-            .then(res => res.json())
-            .then(data => setSignupData(data))
+        .then ((response) => {
+            if (response.ok) {
+                return response.json()
+            }
+            console.log(response)
+            throw new Error(`Something went wrong ${response.status} ${response.statusText}`)
+        })
+            .then((data) => {
+                setSignupData(data)
+                navigate('/login') })
+            .catch(error => {
+                console.log(error)
+                setError({
+                hasError: true,
+                errorMessage: error.message || error.statusText
+                })})
 
     }
 
@@ -111,14 +134,10 @@ export default function Signup() {
                             onChange={handleChange}
                             />
                             
-                        </Form.Group> 
-
-                        <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text>
-                                           
+                        </Form.Group>      
                         <Button variant="secondary" onClick={handleSubmit}>Signup</Button>
                     </form>
+                    {error.hasError && (<span className="form-error">{error.errorMessage}</span>)}
                 
                 </Col>
             </Stack>

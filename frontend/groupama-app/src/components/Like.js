@@ -3,6 +3,9 @@ import Button from 'react-bootstrap/Button';
 
 import { AuthContext } from "../context/AuthContext";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+
 
 export default function Like (props) {
 
@@ -34,6 +37,6 @@ export default function Like (props) {
     }
 
     return (
-        <Button onClick={likePost}>Like</Button>
+        <FontAwesomeIcon icon={faThumbsUp} onClick={likePost}/>
     )
 }

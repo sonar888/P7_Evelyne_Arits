@@ -27,22 +27,23 @@ export default function NewPost() {
     const {authentication} = React.useContext(AuthContext) // the data is used to authenticate the API call
     const {refresh, setRefresh} = React.useContext(AuthContext) // the state is used to refrest the GET call in the post components once the new post has been added
     const navigate = useNavigate()
+    
 
   
 // A state with the form data
-    const [formData, setFormData] = React.useState({
-        title: "",
-        text: "",
-        imageUrl: ""
 
-    })
+const [file, setFile] = React.useState();
+const [form, setForm] = React.useState({
+    title: "",
+    text: ""
+})
 
 
 // This function watches the form input and updates the form data with every keystroke
     function handleChange(event) {
         // const file = event.target.files[0]
         const {type, value, name} = event.target
-        setFormData(prevData => {
+        setForm(prevData => {
             return {
                 ...prevData,
                 
@@ -50,23 +51,41 @@ export default function NewPost() {
                 
             }
         })
-        console.log(formData)
+       
+        
         // console.log(files[0].name)
     }
 
+    function handleFile(event) {
+        setFile(event.target.files[0])
+    }
 
-// The form data is used to fill the body of the API request
-    const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authentication.token}`},
-                body: JSON.stringify({ title : formData.title , text : formData.text, imageUrl: formData.imageUrl }),
-        
-            };
+
+
 
 
 //The function that sends the informationt o the API
     function handleSubmit(event) {
         event.preventDefault();
+
+
+        const myHeaders = new Headers();
+        // ("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${authentication.token}`);
+
+        const formdata = new FormData();
+        formdata.append("image", file);
+        formdata.append("text", form.text);
+        formdata.append("title", form.title);
+
+        console.log(formdata.file)
+
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+          };
 
         fetch("http://localhost:5000/api/pagePosts", requestOptions)
         .then(res => {
@@ -78,7 +97,7 @@ export default function NewPost() {
           })
           .then (res => {
             setRefresh( prevData => !prevData)
-            navigate('/Home')
+            navigate('/')
             
           })
           .catch(error => {
@@ -103,7 +122,7 @@ export default function NewPost() {
                                 type="title"
                                 placeholder="Title"
                                 name="title"
-                                value={formData.title}
+                                value={form.title}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -114,7 +133,7 @@ export default function NewPost() {
                                     type="text"
                                     placeholder="text"
                                     name="text"
-                                    value={formData.text}
+                                    value={form.text}
                                     onChange={handleChange} aria-label="With textarea" />
                             </InputGroup>            
                         </Form.Group>
@@ -122,10 +141,8 @@ export default function NewPost() {
                             <Form.Label>Title</Form.Label>
                             <Form.Control
                                 type="file"
-                                placeholder="file"
-                                name="file"
-                                // value={formData.file}
-                                onChange={handleChange}
+                                // value={file}
+                                onChange={handleFile}
                             />
                         </Form.Group>
                         

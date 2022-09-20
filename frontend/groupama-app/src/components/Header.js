@@ -7,6 +7,7 @@ import {Link}  from 'react-router-dom';
 // Import React-Boostrap and css elements
 
 import logo from "../logo/icon-left-font-monochrome-white.png"
+import Button from 'react-bootstrap/Button';
 import "bootstrap/dist/css/bootstrap.css"
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
@@ -32,28 +33,52 @@ export default function Header() {
 
   }
 
+  function parseJwt(token) {
+    if (!token) {
+      return;
+    }
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    return JSON.parse(window.atob(base64));
+  }
 
-  // The header
+  const user = parseJwt(authentication.token)
+  
+
+
+  // The Navbar
+
   return (
-   <Navbar bg="red" variant="dark">
+
+    <Navbar bg="red">
     <Container>
-      <Navbar.Brand>
+      <Navbar.Brand href="#home">
         <img
           alt=""
           src={logo}
-          width="170"
-          height="100"
+          width="150"
+          height="60"
           className="d-inline-block align-top"
-        />
+        />{' '}
+        
       </Navbar.Brand>
-      <div>
-
-        {/* This dipslay the logout button when the user is logged in, or the option to login/signup */}
-        {authentication.isAuthenticated? <button onClick={handleLogout}>Logout</button> : <> <Link to ="/login">Login</Link> <Link to ="/signup">Signup</Link> </>} 
-      
-      </div>
+      <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text>
+            {authentication.isAuthenticated? <p> Signed in as: {user.userName}</p> : ''}
+            {authentication.isAuthenticated?  <Button variant="secondary" size="sm" onClick={handleLogout}>Logout </Button> : <> <Link to ="/login">Login</Link> <Link to ="/signup">Signup</Link> </>}
+          </Navbar.Text>
+        </Navbar.Collapse>
     </Container>
   </Navbar>
+
+
+   
+
+        // {/* This dipslay the logout button when the user is logged in, or the option to login/signup */}
+        // {authentication.isAuthenticated? <button onClick={handleLogout}>Logout</button> : <> <Link to ="/login">Login</Link> <Link to ="/signup">Signup</Link> </>} 
+      
+
+ 
   );
 }
 

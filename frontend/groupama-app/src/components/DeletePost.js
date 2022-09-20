@@ -1,6 +1,11 @@
 import React from "react"
 
 import Button from 'react-bootstrap/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import CloseButton from 'react-bootstrap/CloseButton';
+
+
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -42,6 +47,6 @@ export default function DeletePostBtn (props) {
     }
 
     return (
-        <Button variant="danger" onClick={handleDeletePost}>Delete</Button>
+      <CloseButton onClick={handleDeletePost}/>
     )
 }
