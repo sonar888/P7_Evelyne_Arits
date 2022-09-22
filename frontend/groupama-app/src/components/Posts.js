@@ -13,7 +13,7 @@ import Stack from "react-bootstrap/esm/Stack";
 import Spinner from 'react-bootstrap/Spinner';
 
 
-
+//Import Font awesome elements
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -32,7 +32,7 @@ export default function Posts() {
 
 
     const {refresh} = React.useContext(AuthContext) // the refresh state can be true or false => this does not impact the display, here refresh is used to trigger the UseEffect function when it's value changes
-    const {authentication} = React.useContext(AuthContext) // this boolean handles the authentication 
+    const {authentication} = React.useContext(AuthContext) // this component handles the authentication + user auth data
     const [posts, setPosts] = React.useState([]) // an [] of posts
     const [isLoaded, setIsLoaded] = React.useState(false)
     
@@ -70,7 +70,6 @@ export default function Posts() {
 // A function that takes each post and renders it in a JSX component
     const postElements = posts.map(post => {
         return (
-
             <Col
             xs={{ span: 10, offset: 1}} 
             sm={{ span: 8, offset: 2 }}
@@ -89,9 +88,9 @@ export default function Posts() {
                             {post.text}
                         </Card.Text>
                         <Card.Img variant="top" src={post.imageUrl} />
-                        <footer className="blockquote-footer">
+                        <div className="blockquote-footer">
                             Un message de <cite title="Source Title">{post.author.name}</cite>
-                        </footer>
+                        </div>
                         <Like id = {post._id}/> {post.likes}
                     </Card.Body>
                 </Card>
@@ -103,9 +102,8 @@ export default function Posts() {
 
     return (
         <>  
-            {isLoaded? <div>{postElements}</div> : <Spinner animation="border" variant="primary" />}
+            {isLoaded? <div className="page-margin">{postElements}</div> : <Spinner animation="border" variant="primary" />}
             <div className="parent"><button className="round"> <Link to ="/create"><FontAwesomeIcon icon={faPlus} inverse /></Link> </button></div> 
-
         </>
     )
 }

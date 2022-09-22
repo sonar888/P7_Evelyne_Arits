@@ -50,10 +50,7 @@ const [form, setForm] = React.useState({
                 [name] : value,
                 
             }
-        })
-       
-        
-        // console.log(files[0].name)
+        })        
     }
 
     function handleFile(event) {
@@ -77,8 +74,6 @@ const [form, setForm] = React.useState({
         formdata.append("image", file);
         formdata.append("text", form.text);
         formdata.append("title", form.title);
-
-        console.log(formdata.file)
 
         const requestOptions = {
             method: 'POST',
@@ -108,6 +103,7 @@ const [form, setForm] = React.useState({
 
 // The form to fill in the post
     return (
+        
         <Container fluid>
             <Stack gap={3}>
                 <Col
@@ -144,9 +140,7 @@ const [form, setForm] = React.useState({
                                 // value={file}
                                 onChange={handleFile}
                             />
-                        </Form.Group>
-                        
-                                           
+                        </Form.Group>                
                         <Button variant="secondary" onClick={handleSubmit}>Submit</Button>
                     </form>
                 

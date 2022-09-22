@@ -31,6 +31,7 @@ export default function Signup() {
     })
 
 
+// A state to handle error messages from the API
     const [error, setError] = React.useState({
         errorMessage : undefined,
         hasError  : false
@@ -43,7 +44,6 @@ export default function Signup() {
             return {
                 ...prevData,
                 [name]: value
-
             }
         }) 
     }
@@ -60,23 +60,20 @@ export default function Signup() {
 //The function that sends the informationt to the API
     function handleSubmit(event) {
         event.preventDefault()
-        console.log("Form submitted", requestOptions.body)
         fetch("http://localhost:5000/api/auth/signup", requestOptions)
         .then ((response) => {
             if (response.ok) {
                 return response.json()
             }
-            console.log(response)
             throw new Error(`Something went wrong ${response.status} ${response.statusText}`)
         })
             .then((data) => {
                 setSignupData(data)
                 navigate('/login') })
             .catch(error => {
-                console.log(error)
                 setError({
                 hasError: true,
-                errorMessage: error.message || error.statusText
+                errorMessage: error.message || error.statusText //Setting the error to display in the component
                 })})
 
     }
@@ -84,7 +81,7 @@ export default function Signup() {
  
 // The form for signup
     return (
-        <Container fluid>
+        <Container fluid className="form">
             <Stack gap={3}>
                 <Col
                 xs={{ span: 12}} 
@@ -111,34 +108,30 @@ export default function Signup() {
                                 value={signupData.lastName}
                                 onChange={handleChange}
                             />
-                            
                         </Form.Group>
                         <Form.Group className="mb-3" >
                             <Form.Label>Email address</Form.Label>
                             <Form.Control
                                 type="email"
-                                placeholder="email"
+                                placeholder="Email"
                                 name="email"
                                 value={signupData.email}
                                 onChange={handleChange}
-                            />
-                            
+                            />    
                         </Form.Group>
                         <Form.Group className="mb-3" >
                             <Form.Label>Password</Form.Label>
                             <Form.Control
                             type="password"
-                            placeholder="password"
+                            placeholder="Password"
                             name="password"
                             value={signupData.password}
                             onChange={handleChange}
                             />
-                            
                         </Form.Group>      
                         <Button variant="secondary" onClick={handleSubmit}>Signup</Button>
                     </form>
                     {error.hasError && (<span className="form-error">{error.errorMessage}</span>)}
-                
                 </Col>
             </Stack>
         </Container>

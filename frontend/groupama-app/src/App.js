@@ -1,43 +1,38 @@
+// Import React elements
+
 import React from "react"
-import Header from "./components/Header"
-import Login from "./components/Login"
-import Footer from "./components/Footer"
-import Posts from "./components/Posts"
-import Signup from "./components/Signup"
-import getCookie from "./session/getCookie"
-import Test from "./components/Test"
-
-import "bootstrap/dist/css/bootstrap.css"
-import Col from 'react-bootstrap/Col'
-import "./App.css"
-
-
-
-import { Link } from "react-router-dom";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 
-import { AuthContext } from "./context/AuthContext"
+
+// Importing the different components
+import Header from "./components/Header"
+import Login from "./components/Login"
+import Posts from "./components/Posts"
+import Signup from "./components/Signup"
 import NewPost from "./components/NewPost"
 import ModifyPost from "./components/ModifyPost"
+import Footer from "./components/Footer"
+import { AuthContext } from "./context/AuthContext"
 
 
+//Importing boostrap framwork
+import "bootstrap/dist/css/bootstrap.css"
+
+//Importing CSS styling
+import "./App.css"
 
 
 export default function App() {
 
+
+// Authentication of the user
   const {authentication, setAuthentication} = React.useContext(AuthContext)
 
-  // React.useEffect(function() {
-  //   if (typeof getCookie('Gourpomania') !== undefined) {
-  //     setAuthentication(authentication.isAuthenticated: true)
-  //   }
-  // }, [0])
  
   
   
   return (
-    <>
-   
+    <div className="page">
     <Router>
       <Header />
       <Routes>
@@ -47,24 +42,9 @@ export default function App() {
         <Route  path = "/create" element={ authentication.isAuthenticated? <>  <NewPost/></> : <Login/> }> </Route>
         <Route path = "/modify" element = { authentication.isAuthenticated? <>  <ModifyPost/></> : <Login/> }></Route>
       </Routes>
+      <Footer/>
     </Router> 
-      
-      
-      
-      
-      
-      
-  
-        {/* <Test/> */}
-        
-  
-    {/* <Posts/> */}
-
-
-    
-    
-    
-    </>
+    </div>
   )  ;
 }
 

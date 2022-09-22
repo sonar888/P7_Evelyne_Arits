@@ -33,7 +33,7 @@ export default function Header() {
 
   }
 
-  function parseJwt(token) {
+  function parseJwt(token) { // We are parsng the token in the cookie to retrieve the user, user's name to display in the header when logged in
     if (!token) {
       return;
     }
@@ -63,27 +63,13 @@ export default function Header() {
         
       </Navbar.Brand>
       <Navbar.Collapse className="justify-content-end">
-          <Navbar.Text>
+          <Navbar.Text className="nav-text">
+           {/* This dipslay the logout button when the user is logged in with their name, or the option to login/signup */}
             {authentication.isAuthenticated? <p> Signed in as: {user.userName}</p> : ''}
             {authentication.isAuthenticated?  <Button variant="secondary" size="sm" onClick={handleLogout}>Logout </Button> : <> <Link to ="/login">Login</Link> <Link to ="/signup">Signup</Link> </>}
           </Navbar.Text>
         </Navbar.Collapse>
     </Container>
   </Navbar>
-
-
-   
-
-        // {/* This dipslay the logout button when the user is logged in, or the option to login/signup */}
-        // {authentication.isAuthenticated? <button onClick={handleLogout}>Logout</button> : <> <Link to ="/login">Login</Link> <Link to ="/signup">Signup</Link> </>} 
-      
-
- 
   );
 }
-
-
-
-// see https://github.com/marialena31/online-store-90mn/blob/main/src/components/App.js
-//see https://github.com/marialena31/rest-countries-api/tree/master/src
-

@@ -1,4 +1,9 @@
+// Import React elements
+
 import React from "react"
+
+
+// Import React-Boostrap elements
 
 import "bootstrap/dist/css/bootstrap.css"
 import Col from 'react-bootstrap/Col'
@@ -6,6 +11,9 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
+
+
+//Import React components
 
 import { AuthContext } from "../context/AuthContext";
 import setCookie from "../session/setCookie";
@@ -17,24 +25,26 @@ import {Link, useNavigate}  from 'react-router-dom'
 
 
 
-export default function LoginForm() {
+export default function LoginForm() { // the form to handle the login of the user
 
-   const {authentication, setAuthentication} = React.useContext(AuthContext) 
-   const {refresh, setRefresh} = React.useContext(AuthContext)
-   const navigate = useNavigate()
+   const {authentication, setAuthentication} = React.useContext(AuthContext) // he user's authentication data
+   const {refresh, setRefresh} = React.useContext(AuthContext) // // the refresh state can be true or false => this does not impact the display, here refresh is used to trigger the UseEffect function when it's value changes
+   const navigate = useNavigate() // the component that allows us to navigate to the home page after login
    
+
+   //A state to handle the error
    const [error, setError] = React.useState({
     errorMessage : undefined,
     hasError  : false
     })
 
-
+    // A state to handle the input data from the user
     const [data, setData] = React.useState({
         email: undefined ,
         password: undefined
     })
 
-
+    //A function that listens to each keystroke to update the user input
     function handleChange(event) {
         const {type, value, name} = event.target
         setData(prevData => {
@@ -43,9 +53,9 @@ export default function LoginForm() {
                 [name] : value
             }
         })
-        console.log(data)
     }
 
+    //Fetch options for the API call
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,7 +66,7 @@ export default function LoginForm() {
     
 
 
-    // decode the logged in user
+    // A function to decode the login token in the cookies once created
   function parseJwt(token) {
     if (!token) {
       return;
@@ -66,34 +76,30 @@ export default function LoginForm() {
     return JSON.parse(window.atob(base64));
   }
 
-  // loggedin user
+  
   
    
-
+// The function that handles the submission of the login form
     function handleSubmit(event) {
         event.preventDefault();
-            fetch("http://localhost:5000/api/auth/login", requestOptions)
+            fetch("http://localhost:5000/api/auth/login", requestOptions) // request to API
             .then ((response) => {
                 if (response.ok) {
                     return response.json()
                 }
-                console.log(response)
-                throw new Error(`Something went wrong ${response.status} ${response.statusText}`)
+                throw new Error(`Something went wrong ${response.status} ${response.statusText}`) //Setting the error
             })
             .then (response => {
-                console.log(response)
-                removeCookie('Groupomania')
+                removeCookie('Groupomania') //updating the cookie
                 setCookie('Groupomania', response.token)
-                console.log(getCookie('Groupomania'))
-                const role = parseJwt(response.token)
-                console.log(role)
+                const role = parseJwt(response.token) // retrieving the role from the token
     
                 if (role.userAdmin) {
                     setAuthentication({
                         ...response,
                         isAuthenticated: true,
-                        isAdmin: true
-                    })
+                        isAdmin: true // setting the admin role and user authentication
+                    }) 
     
                 } else {
                     setAuthentication({
@@ -102,19 +108,18 @@ export default function LoginForm() {
                         isAdmin: false 
                     })
                 }
-                setRefresh(prevRefresh => !prevRefresh)
-                navigate('/')   
+                setRefresh(prevRefresh => !prevRefresh) // Loading the post page
+                navigate('/') // navigating to the post page  
             })
             .catch(error => {
-                console.log(error)
                 setError({
                 hasError: true,
-                errorMessage: error.message || error.statusText
+                errorMessage: error.message || error.statusText // handling the error
                 })})
     };
    
     return (
-        <Container fluid>
+        <Container fluid className="form">
             <Stack gap={3}>
                 <Col
                 xs={{ span: 12}} 

@@ -1,7 +1,14 @@
-import React from "react"
+// A simple React footer
 
-export default function Footer() {
-  return (
-    <div>this is my footer</div>
-  );
-}
+import React from 'react';
+  
+const Footer = () => (
+  <footer className="footer">
+    <div >
+        &copy; {new Date().getFullYear()} Copyright:{' '} Groupomania.com
+        
+      </div>
+  </footer>
+);
+  
+export default Footer;
